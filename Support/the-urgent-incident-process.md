@@ -16,7 +16,7 @@ What classifies as an urgent incident? The accepted definition at CenturyLink Cl
 
 **Incident Commander** – The Incident Commander role is to assemble the team and work with the CapCom, executives, and engineers to investigate, mitigate, monitor, and ultimately resolve an incident. They make sure restoration of service is always the top priority.
 
-**CAPCOM** - This role's title was adapted from NASA's "capsule communicator", a person who is dedicated to communications with the crew of a spaceflight. The CAPCOM is the heart of the communication with the customers. As engineers work to solve the problem, the Incident Commander coordinates resolution, while the CAPCOM makes sure the customers stay informed. CAPCOM also communicates workarounds to current customer issues as they are found by Customer Care, ensuring that the Customer Care team is doing everything they can to mitigate the side effects of urgent incidents.
+**CAPCOM** - This role's title was adapted from NASA's "capsule communicator", a person who is dedicated to communications with the crew of a spaceflight. The CAPCOM is the heart of the communication with the customers. As engineers work to solve the problem, the Incident Commander coordinates resolution, while the CAPCOM makes sure customers stay informed. CAPCOM also communicates workarounds to current customer issues as they are found by Customer Care, ensuring that the Customer Care team is doing everything it can to mitigate the side effects of urgent incidents.
 
 **Subject Matter Expert (SME)** – An engineer whose main role is the management and improvement of the impacted service.
 
