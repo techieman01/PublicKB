@@ -1,0 +1,27 @@
+function piResponse() {
+piSetCookie('visitor_id86222', '343535275', 3650);
+piSetCookie('visitor_id86222-hash', '28533a73a3f0f73777599365a81d0205bc0de3b5d2f9d4f1732608a1e0c7da64253067cc818145f256c4ddf1c12f1f5e265a5b34', 3650);
+
+if (document.location.protocol != "https:" || (document.location.protocol == "https:" && false)) {
+var analytics_link = document.location.protocol + "//" + "info.ctl.io/analytics?";
+pi.tracker.visitor_id='343535275';
+
+pi.tracker.visitor_id_sign='28533a73a3f0f73777599365a81d0205bc0de3b5d2f9d4f1732608a1e0c7da64253067cc818145f256c4ddf1c12f1f5e265a5b34';
+
+var variables = 'conly=true';
+for (property in pi.tracker) {
+	variables += "&"+property+"="+pi.tracker[property];
+}
+var headID = document.getElementsByTagName("head")[0];
+piScriptObj[piScriptNum] = document.createElement('script');
+piScriptObj[piScriptNum].type = 'text/javascript';
+piScriptObj[piScriptNum].src = analytics_link + variables;
+headID.appendChild(piScriptObj[piScriptNum]);
+piScriptObj[piScriptNum].onload = function() { return; }
+}
+}
+piResponse();
+
+
+
+
