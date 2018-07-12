@@ -1,0 +1,186 @@
+/*global jQuery, console, ko, setTimeout, clearTimeout */
+/*jshint sub:true*/
+
+(function ($, console, ko) {
+    "use strict";
+
+    // Shorthand binding to add href to a link
+    // Examples:
+    //   <a data-bind="href: HrefOnObject"></a>
+    ko.bindingHandlers.href = {
+        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            return ko.bindingHandlers['attr']['update'](element, function () {
+                return { href: valueAccessor() };
+            }, allBindings, viewModel, bindingContext);
+        }
+    };
+
+    // Used for debugging prints to the console, can be used on virtual elements.
+    // Examples:
+    //   <div data-bind="console: anything"></div>
+    ko.bindingHandlers.console = {
+        update: function (element, valueAccessor) {
+            console.log(ko.unwrap(valueAccessor()));
+        }
+    };
+    ko.virtualElements.allowedBindings.console = true;
+
+    function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+    // Will change 1000 to 1K to better fit places in UI
+    // Examples:
+    //   <span data-bind="largeNumber: bigNumber"></span>
+    ko.bindingHandlers.largeNumber = {
+        update: function (element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (isNumber(value) && value >= 1000) {
+                $(element).text((Math.round((value / 1000) * 10) / 10) + "K");
+            } else {
+                $(element).text(value);
+            }
+        }
+    };
+
+    // Will round a number to two decimal places. e.g. 10.126 becomes 10.13
+    // Examples:
+    //   <span data-bind="twoDecimals: aNumber"></span>
+    ko.bindingHandlers.twoDecimals = {
+        update: function (element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (isNumber(value)) {
+                $(element).text(Math.round(value * 100) / 100);
+            } else {
+                $(element).html(value);
+            }
+        }
+    };
+
+    function formatPrice(price, keepCents) {
+        var formattedPrice;
+
+        if (price < .001) {
+            formattedPrice = (Math.round(price * 10000) / 10000).toFixed(4);
+        } else if (price < .01) {
+            formattedPrice = (Math.round(price * 1000) / 1000).toFixed(3);
+        } else {
+            formattedPrice = (Math.round(price * 100) / 100).toFixed(2)
+                .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+        }
+
+        if (!keepCents) {
+            formattedPrice = formattedPrice.replace(/\.00$/, '');
+        }
+
+        return formattedPrice;
+    }
+
+    // Will round a number to two decimal places and add $. e.g. 10.126 becomes $10.13
+    // Examples:
+    //   <span data-bind="toMoney: aNumber"></span>
+    ko.bindingHandlers.toMoney = {
+        update: function (element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (isNumber(value)) {
+                $(element).text("$" + formatPrice(value, true));
+            } else {
+                $(element).html(value);
+            }
+        }
+    };
+
+    // Returns a range of prices. e.g. {min: 10.126, max: 1234} becomes
+    //  $10-$1,1234
+    // Examples:
+    //   <span data-bind="toMoneyRange: aRange"></span>
+    ko.bindingHandlers.toMoneyRange = {
+        update: function (element, valueAccessor) {
+            var range = ko.unwrap(valueAccessor()),
+                rangeText;
+
+            if (range) {
+                if (!range.max) {
+                    rangeText = '$' + formatPrice(range.min) + ' or more';
+                } else if (range.min === 0) {
+                    rangeText = '$' + formatPrice(range.max) + ' or less';
+                } else {
+                    rangeText = '$' + formatPrice(range.min) +
+                        '–$' + formatPrice(range.max);
+                }
+                $(element).text(rangeText);
+            } else {
+                $(element).html(range);
+            }
+        }
+    };
+
+    // Displays a number as an integer percentage. e.g. 0.023 becomes %2
+    // Examples:
+    //   <span data-bind="toPercentage: aNumber"></span>
+    ko.bindingHandlers.toPercentage = {
+        update: function (element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (isNumber(value)) {
+                $(element).text(Math.round(value * 100) + '%');
+            } else {
+                $(element).html(value);
+            }
+        }
+    };
+
+    ko.bindingHandlers.addCurrencySymbol = {
+        update: function (element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (isNumber(value)) {
+                $(element).text("$" + value);
+            } else {
+                $(element).html(value);
+            }
+        }
+    };
+
+    function hasItems(data) {
+        var value = ko.unwrap(data),
+            result = false;
+
+        if (value.length && value.length > 0)
+            result = true;
+
+        return result;
+    }
+
+    // Will bind if the collection has any elements
+    // Examples:
+    //   <!-- ko any: collection -->
+    ko.bindingHandlers.any = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            return ko.bindingHandlers['if']['init'](element, function () {
+                return ko.computed(function () {
+                    return hasItems(valueAccessor());
+                });
+            }, allBindings, viewModel, bindingContext);
+        }
+    };
+    ko.virtualElements.allowedBindings.any = true;
+
+    // Will bind if the collection is empty
+    // Examples:
+    //   <!-- ko empty: collection -->
+    ko.bindingHandlers.empty = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            return ko.bindingHandlers['if']['init'](element, function () {
+                return ko.computed(function () {
+                    return !hasItems(valueAccessor());
+                });
+            }, allBindings, viewModel, bindingContext);
+        }
+    };
+    ko.virtualElements.allowedBindings.empty = true;
+
+}(jQuery, console, ko));

@@ -1,0 +1,47 @@
+var objToParams = function (obj, prefix) {
+        var params = [];
+        for (k in obj) {
+            params = params.concat(prefix + '.' + k + '=' + obj[k]);
+        }
+        return params.join('&');
+    };   
+    if (typeof window.MpElPref !== 'undefined') {
+        window.MpElPref = MpElPref;
+    }   
+    var base = MpElPref.scriptPath;  
+    var temp = encodeURIComponent(window.top.location.href);
+    var defaultcountry = MpElPref.country;
+	var defaultcurrency="";
+    var defaultlang = MpElPref.lang;  
+    var defaultsite = MpElPref.site;
+    var defaultregion= "";
+	var defaultsitelist= MpElPref.allsites;	
+	var nonMP=false;
+	if(MpElPref.origin=="none"){nonMP=true;}
+	userPref = {
+			siteurl : defaultsite,
+			lang : defaultlang,
+			country :defaultcurrency,
+			region : defaultregion,
+			sitelist:defaultsitelist,
+			nonMP:nonMP,
+			mode:''
+		};
+	if (typeof MpElPref.currency == 'undefined' || MpElPref.currency == null) {
+		 defaultcurrency = MpElPref.currency;
+	}
+	if (typeof MpElPref.region == 'undefined' || MpElPref.region == null) {
+		 defaultregion = MpElPref.region;
+	}
+	var nonMP=false;
+	if(MpElPref.origin=="none"){nonMP=true;}
+		iframe = document.createElement('iframe');
+        iframe.src = "https://" + base + "mpel_storage.html?cmd=storePref&href=" + encodeURIComponent(location.href)+"&siteurl="+defaultsite+"&lang="+defaultlang+"&country="+defaultcountry+"&region="+defaultregion+"&sitelist="+defaultsitelist+ "&currency=" + defaultcurrency+ "&nonMP=" + nonMP;;
+        iframe.setAttribute("sandbox", "allow-same-origin allow-top-navigation allow-forms allow-scripts");
+		iframe.scrolling = 'no';
+		iframe.frameBorder = '0';
+		iframe.style.height = '0px';
+		iframe.style.width = '0px';
+		iframe.style.display = 'none';
+        var body = document.getElementsByTagName('body')[0];
+		body.parentNode.insertBefore(iframe,body);
